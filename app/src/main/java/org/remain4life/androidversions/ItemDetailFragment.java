@@ -1,15 +1,13 @@
 package org.remain4life.androidversions;
 
 import android.app.Activity;
+import android.databinding.Bindable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
-import org.remain4life.androidversions.dummy.DummyContent;
+import org.remain4life.androidversions.base.BaseFragment;
+import org.remain4life.androidversions.databinding.ItemDetailBinding;
+import org.remain4life.androidversions.db.PlatformVersionEntity;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -17,17 +15,12 @@ import org.remain4life.androidversions.dummy.DummyContent;
  * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment {
-    /**
-     * The fragment argument representing the item ID that this fragment
-     * represents.
-     */
-    public static final String ARG_ITEM_ID = "item_id";
+public class ItemDetailFragment extends BaseFragment<ItemDetailBinding> {
+    // fragment argument representing Parcelable DB entity
+    public static final String ARG_ENTITY = "entity";
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    private DummyContent.DummyItem mItem;
+    // content to present
+    private PlatformVersionEntity entity;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -40,30 +33,35 @@ public class ItemDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(ARG_ENTITY)) {
+            entity = args.getParcelable(ARG_ENTITY);
+            setTitle();
+        }
+    }
 
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+    private void setTitle() {
+        Activity activity = this.getActivity();
+        if (activity != null) {
+            CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(entity.name);
             }
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.item_detail, container, false);
+    public int getVariable() {
+        return BR.fragment;
+    }
 
-        // Show the dummy content as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.details);
-        }
+    @Override
+    public int getLayoutId() {
+        return R.layout.item_detail;
+    }
 
-        return rootView;
+    @Bindable
+    public PlatformVersionEntity getEntity() {
+        return entity;
     }
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 import org.remain4life.androidversions.BuildConfig;
 import org.remain4life.androidversions.ItemListActivity;
 import org.remain4life.androidversions.R;
+import org.remain4life.androidversions.base.IVersionItemsContainer;
 import org.remain4life.androidversions.helpers.Application;
 import org.remain4life.androidversions.helpers.Helper;
 import org.remain4life.androidversions.helpers.rx.RxAndroidPlugins;
@@ -160,10 +161,10 @@ public class DataRepository {
      * Loads Android platform version list
      *
      * @param filter enum value to choose what to load
-     * @param activity ItemListActivity to load items
+     * @param container IVersionItemsContainer implementation to load items
      */
     @SuppressLint("CheckResult")
-    public void loadVersionsFromDB(Filter filter, ItemListActivity activity) {
+    public void loadVersionsFromDB(Filter filter, IVersionItemsContainer container) {
 
         Single<List<PlatformVersionEntity>> load;
         switch (filter) {
@@ -185,13 +186,13 @@ public class DataRepository {
                 .observeOn(RxAndroidPlugins.onMainThreadScheduler())
                 .subscribe(entities ->  {
 
-                            activity.setVersionItems(entities);
+                            container.setVersionItems(entities);
 
                             if (BuildConfig.DEBUG) {
                                 Log.d(DB_TAG, "-> " + entities.size() + " entities successfully loaded from DB");
                             }
                         },
-                        throwable -> activity.onError(throwable.toString())
+                        throwable -> container.onError(throwable.toString())
                 );
     }
 }

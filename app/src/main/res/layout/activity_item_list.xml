@@ -37,8 +37,8 @@
 
             <include
                 layout="@layout/item_list"
-                android:id="@+id/recycler_view"
-                app:data="@{activity.versionItems}"/>
+                android:id="@+id/recycler_container"
+                app:items="@{activity.versionItems}"/>
         </FrameLayout>
 
 

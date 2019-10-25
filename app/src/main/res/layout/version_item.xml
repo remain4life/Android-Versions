@@ -5,60 +5,84 @@
         <variable
             name="activity"
             type="org.remain4life.androidversions.ItemListActivity"/>
+
+        <variable
+            name="viewHolder"
+            type="org.remain4life.androidversions.adapters.PlatformVersionsAdapter.VersionViewHolder"/>
+
         <variable
             name="entity"
             type="org.remain4life.androidversions.db.PlatformVersionEntity"/>
     </data>
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/card_half_margin"
-        android:layout_marginBottom="@dimen/card_half_margin"
-        android:layout_marginLeft="@dimen/card_margin"
-        android:layout_marginStart="@dimen/card_margin"
-        android:layout_marginRight="@dimen/card_margin"
-        android:layout_marginEnd="@dimen/card_margin"
-        card_view:cardCornerRadius="4dp"
-        card_view:cardElevation="4dp">
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <android.support.v7.widget.CardView
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/card_margin"
+            android:layout_weight="8"
+            android:layout_marginTop="@dimen/card_half_margin"
+            android:layout_marginBottom="@dimen/card_half_margin"
+            android:layout_marginLeft="@dimen/card_margin"
+            android:layout_marginStart="@dimen/card_margin"
+            android:layout_marginRight="@dimen/card_margin"
+            android:layout_marginEnd="@dimen/card_margin"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardElevation="4dp"
+            card_view:cardPreventCornerOverlap="true"
+            android:onClick="@{() -> viewHolder.onVersion()}">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/card_margin"
+                android:paddingStart="@dimen/card_margin"
+                android:paddingRight="@dimen/card_margin"
+                android:paddingEnd="@dimen/card_margin"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/platform_version"
+                    style="@style/LabelThemeNoPadding"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="16dp"
+                    android:text="@{entity.version}"
+                    android:onClick="@{() -> viewHolder.onVersion()}"/>
+
+                <TextView
+                    android:id="@+id/platform_name"
+                    style="@style/PrimaryTextTheme"
+                    android:layout_width="0dp"
+                    android:layout_weight="5"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="8dp"
+                    android:text="@{entity.name}"
+                    />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:id="@+id/info_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:paddingTop="@dimen/icon_margin"
+            android:paddingBottom="@dimen/icon_margin"
             android:paddingStart="@dimen/card_margin"
-            android:paddingRight="@dimen/card_margin"
             android:paddingEnd="@dimen/card_margin"
-            android:orientation="horizontal">
+            android:contentDescription="@string/app_name"
+            android:src="@{entity.isFavourite ? @drawable/ic_favourite : @drawable/ic_no_favourite, default = @drawable/ic_no_favourite}"
+            android:onClick="@{() -> viewHolder.onFavourite()}"/>
 
-            <TextView
-                android:id="@+id/platform_version"
-                style="@style/LabelThemeNoPadding"
-                android:layout_width="0dp"
-                android:layout_weight="4"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
-                android:text="@{entity.version}"/>
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/platform_name"
-                style="@style/PrimaryTextTheme"
-                android:layout_width="0dp"
-                android:layout_weight="4"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
-                android:text="@{entity.name}"/>
 
-            <ImageView
-                android:id="@+id/info_image"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:paddingTop="@dimen/card_half_margin"
-                android:contentDescription="@string/app_name"
-                android:src="@{entity.isFavourite ? @drawable/ic_favourite : @drawable/ic_no_favourite, default = @drawable/ic_no_favourite}"/>
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
 </layout>

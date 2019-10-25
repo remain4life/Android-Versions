@@ -1,27 +1,29 @@
 package org.remain4life.androidversions.adapters;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.Intent;
 import android.databinding.Bindable;
 import android.databinding.Observable;
 import android.databinding.ObservableList;
 import android.databinding.PropertyChangeRegistry;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import org.remain4life.androidversions.BR;
 import org.remain4life.androidversions.BuildConfig;
+import org.remain4life.androidversions.ItemDetailActivity;
+import org.remain4life.androidversions.ItemDetailFragment;
 import org.remain4life.androidversions.ItemListActivity;
+import org.remain4life.androidversions.R;
 import org.remain4life.androidversions.base.IListAdapter;
 import org.remain4life.androidversions.databinding.VersionItemBinding;
 import org.remain4life.androidversions.db.PlatformVersionEntity;
 
 import java.util.List;
-
-import org.remain4life.androidversions.BR;
 
 import static org.remain4life.androidversions.helpers.Helper.APP_TAG;
 
@@ -30,11 +32,13 @@ public class PlatformVersionsAdapter
         implements IListAdapter<PlatformVersionEntity> {
 
     private ItemListActivity activity;
+    private boolean twoPane;
     private List<PlatformVersionEntity> data;
     private final ObservableList.OnListChangedCallback<ObservableList<PlatformVersionEntity>> onListChangedCallback = new AdapterOnListChangedCallback<>(this);
 
-    public PlatformVersionsAdapter(ItemListActivity activity) {
+    public PlatformVersionsAdapter(ItemListActivity activity, boolean twoPane) {
         this.activity = activity;
+        this.twoPane = twoPane;
     }
 
     @NonNull
@@ -66,19 +70,36 @@ public class PlatformVersionsAdapter
             super(binding.getRoot());
             versionItemBinding = binding;
             versionItemBinding.setActivity(activity);
+            versionItemBinding.setViewHolder(this);
         }
 
         /**
-         * Called on image clicked to open activity with regular image size
+         * Called on item clicked to open details
          */
-        @SuppressLint("CheckResult")
-        public void onImage() {
+        public void onVersion() {
             if (BuildConfig.DEBUG) {
-                Log.d(APP_TAG, "-> Clicked on  " + item.name);
+                Log.d(APP_TAG, "-> Clicked on " + item.name);
             }
 
+            if (twoPane) {
+                Bundle arguments = new Bundle();
+                arguments.putParcelable(ItemDetailFragment.ARG_ENTITY, item);
+                ItemDetailFragment fragment = new ItemDetailFragment();
+                fragment.setArguments(arguments);
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.item_detail_container, fragment)
+                        .commit();
+            } else {
+                Intent intent = new Intent(activity, ItemDetailActivity.class);
+                intent.putExtra(ItemDetailFragment.ARG_ENTITY, item);
+                activity.startActivity(intent);
+            }
+        }
 
-
+        public void onFavourite(){
+            Toast.makeText(activity, "onFavourite clicked", Toast.LENGTH_LONG).show();
+            item.isFavourite = true;
+            notifyPropertyChanged(BR.entity);
         }
 
         @Bindable
@@ -89,7 +110,7 @@ public class PlatformVersionsAdapter
         public void setItem(PlatformVersionEntity item) {
             this.item = item;
             versionItemBinding.setEntity(item);
-            notifyPropertyChanged(BR.item);
+            notifyPropertyChanged(BR.entity);
             versionItemBinding.executePendingBindings();
         }
 

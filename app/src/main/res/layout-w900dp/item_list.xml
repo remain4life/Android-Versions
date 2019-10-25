@@ -1,38 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:baselineAligned="false"
-    android:divider="?android:attr/dividerHorizontal"
-    android:orientation="horizontal"
-    android:showDividers="middle"
-    tools:context=".ItemListActivity">
+<layout>
 
-    <!--
-    This layout is a two-pane layout for the Items
-    master/detail flow.
-    
-    -->
+    <data>
 
-    <org.remain4life.androidversions.LinearRecyclerView
-        android:id="@+id/item_list"
-        android:name="org.remain4life.androidversions.ItemListFragment"
-        android:layout_width="@dimen/item_width"
+        <import type="org.remain4life.androidversions.db.PlatformVersionEntity" />
+
+        <variable
+            name="items"
+            type="java.util.List&lt;PlatformVersionEntity>" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        app:layoutManager="LinearLayoutManager"
-        tools:context="org.remain4life.androidversions.ItemListActivity"
-        tools:listitem="@layout/item_list_content" />
+        android:baselineAligned="false"
+        android:divider="?android:attr/dividerHorizontal"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        tools:context=".ItemListActivity">
 
-    <FrameLayout
-        android:id="@+id/item_detail_container"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3" />
+        <!--
+        This layout is a two-pane layout for the Items
+        master/detail flow.
 
-</LinearLayout>
+        -->
+
+        <org.remain4life.androidversions.LinearRecyclerView
+            android:id="@+id/item_list"
+            android:name="org.remain4life.androidversions.ItemListFragment"
+            android:layout_width="@dimen/item_width"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            app:data="@{items}" />
+
+        <FrameLayout
+            android:id="@+id/item_detail_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3" />
+
+    </LinearLayout>
+
+</layout>

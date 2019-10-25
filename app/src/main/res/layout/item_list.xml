@@ -12,15 +12,11 @@
 
     <org.remain4life.androidversions.LinearRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/item_list"
         android:name="org.remain4life.androidversions.ItemListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        app:data="@{items}"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".ItemListActivity"
-        tools:listitem="@layout/item_list_content" />
+        app:data="@{items}" />
 </layout>

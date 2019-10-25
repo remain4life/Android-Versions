@@ -122,5 +122,10 @@ The Nexus S smartphone, released in December 2010, was the first phone from the 
 As of May 2019, statistics issued by Google indicate that 0.3% of all Android devices accessing Google Play run Gingerbread.</string>
 
     <string name="error">Error</string>
+    <string name="detail_version">Version: %1$s</string>
+    <string name="detail_name">Name: %1$s</string>
+    <string name="detail_released">Released: %1$s</string>
+    <string name="detail_api">API: %1$s</string>
+    <string name="detail_distribution">Distribution: %1$s%%</string>
 
 </resources>
