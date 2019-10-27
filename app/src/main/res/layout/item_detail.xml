@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|end"
                     android:padding="@dimen/icon_big_margin"
-                    android:contentDescription="@string/app_name"
+                    android:contentDescription="@string/menu_favourites"
                     android:src="@{fragment.entity.isFavourite ? @drawable/ic_favourite_green : @drawable/ic_no_favourite_green, default = @drawable/ic_no_favourite_green}"
                     android:onClick="@{() -> fragment.onFavourite()}"/>
 

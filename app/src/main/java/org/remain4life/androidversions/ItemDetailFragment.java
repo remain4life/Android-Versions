@@ -58,14 +58,9 @@ public class ItemDetailFragment extends BaseFragment<ItemDetailBinding> implemen
     private void setTitle() {
         Activity activity = this.getActivity();
         if (activity != null) {
-            Log.d(APP_TAG, "Activity is not null");
             CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                Log.d(APP_TAG, "appBarLayout is not null");
                 appBarLayout.setTitle(entity.name);
-            } else {
-                // if device was rotated to landscape with this fragment
-                activity.setTitle(entity.name);
             }
         }
     }

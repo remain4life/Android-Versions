@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">AndroidVersions</string>
-    <string name="title_item_detail">Item Detail</string>
+    <string name="app_name">Android Versions</string>
+    <string name="app_name_filter">Android Versions - %1$s</string>
+    <string name="title_item_detail">Version Detail</string>
 
     <string name="android_pie_desc">Android Pie introduces a major change to power management, using algorithms to prioritize background activity by apps based on long-term usage patterns and predictions, dividing apps into "Active", "Working Set" (run often), "Frequent", "Rare", and "Never". Similar "adaptive brightness" settings are adjusted automatically based on detected lighting conditions. Both of these features were developed in collaboration with DeepMind.
 
@@ -129,5 +130,8 @@ As of May 2019, statistics issued by Google indicate that 0.3% of all Android de
     <string name="detail_distribution">Distribution: %1$s%%</string>
     <string name="dialog_delete_title">Delete %1$s, %2$s item</string>
     <string name="dialog_delete_message">Are you sure?</string>
+    <string name="menu_all">All</string>
+    <string name="menu_favourites">Favourites</string>
+    <string name="menu_distribution"><![CDATA[< 3% distribution]]></string>
 
 </resources>

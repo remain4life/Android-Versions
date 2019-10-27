@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import org.remain4life.androidversions.adapters.PlatformVersionsAdapter;
 import org.remain4life.androidversions.base.BaseActivity;
@@ -14,10 +17,10 @@ import org.remain4life.androidversions.base.IVersionItemsContainer;
 import org.remain4life.androidversions.databinding.ActivityItemListBinding;
 import org.remain4life.androidversions.db.DataRepository;
 import org.remain4life.androidversions.db.PlatformVersionEntity;
+import org.remain4life.androidversions.helpers.PreferencesCache;
 
 import java.util.List;
 
-import static org.remain4life.androidversions.helpers.Helper.APP_TAG;
 import static org.remain4life.androidversions.helpers.Helper.DB_TAG;
 
 /**
@@ -30,6 +33,7 @@ import static org.remain4life.androidversions.helpers.Helper.DB_TAG;
  */
 public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  implements IVersionItemsContainer, IFavouritesObserver {
 
+    private static final String EXTRA_FILTER = "filter";
     // activity two-pane mode flag, i.e. running on a tablet device or not
     private boolean twoPane;
 
@@ -41,14 +45,21 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
     // repository subject to observe
     DataRepository repo;
 
+    // filter for DB requests
+    DataRepository.Filter filter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setSupportActionBar(binding.toolbar);
-        binding.toolbar.setTitle(getTitle());
 
-        if (findViewById(R.id.item_detail_container) != null) {
+        // load filter
+        filter = PreferencesCache.getFilter();
+
+        setTitle(getAppTitle());
+
+        if (binding.containerTablet != null) {
             // detail container view will be present only in the
             // large-screen layouts (res/values-w900dp)
             twoPane = true;
@@ -60,7 +71,9 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
         repo.registerObserver(this);
 
         // load
-        repo.loadVersionsFromDB(DataRepository.Filter.ALL, this);
+        repo.loadVersionsFromDB(filter, this);
+
+
     }
 
     private void setupRecyclerView() {
@@ -147,17 +160,82 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
             Log.d(DB_TAG, "ItemListActivity -> onUserDataChanged called: " + entity.version + ", "
                     + entity.name + ", favourite - " + entity.isFavourite);
         }
-        for (PlatformVersionEntity item : versionItems) {
-            if (item.version.equals(entity.version)) {
-                item.isFavourite = entity.isFavourite;
+        // reload favourite if we filter them
+        if (filter == DataRepository.Filter.FAVOURITE) {
+            clearDetail();
+            repo.loadVersionsFromDB(filter, this);
+        } else {
+            for (PlatformVersionEntity item : versionItems) {
+                if (item.version.equals(entity.version)) {
+                    item.isFavourite = entity.isFavourite;
+                }
             }
+            setVersionItems(versionItems);
         }
-        setVersionItems(versionItems);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         repo.removeObserver(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        DataRepository.Filter oldFilter = filter;
+        switch (id) {
+            case R.id.all:
+                filter = DataRepository.Filter.ALL;
+                break;
+            case R.id.favourites:
+                filter = DataRepository.Filter.FAVOURITE;
+                break;
+            case R.id.low_distribution:
+                filter = DataRepository.Filter.LOW_DISTRIBUTION;
+                break;
+        }
+
+        // reload data from DB
+        repo.loadVersionsFromDB(filter, this);
+
+        if (oldFilter != filter) {
+            // cache filter
+            PreferencesCache.setFilter(filter);
+
+            // clear detail fragment if filter was changed
+            clearDetail();
+
+            setTitle(getAppTitle());
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Clears detail fragment
+     */
+    private void clearDetail() {
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+    }
+
+    private String getAppTitle() {
+        return String.format(getString(R.string.app_name_filter), getString(filter.source));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // cache filter
+        outState.putInt(EXTRA_FILTER, filter.ordinal());
     }
 }

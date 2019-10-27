@@ -1,6 +1,7 @@
 package org.remain4life.androidversions.db;
 
 import android.annotation.SuppressLint;
+import android.support.annotation.StringRes;
 import android.util.Log;
 
 import org.remain4life.androidversions.BuildConfig;
@@ -42,9 +43,16 @@ public class DataRepository implements IEntitySubject {
     }
 
     public enum Filter {
-        ALL,
-        FAVOURITE,
-        LOW_DISTRIBUTION
+        ALL(R.string.menu_all),
+        FAVOURITE(R.string.menu_favourites),
+        LOW_DISTRIBUTION(R.string.menu_distribution);
+
+        @StringRes
+        public final int source;
+
+        Filter(@StringRes int source) {
+            this.source = source;
+        }
     }
 
 

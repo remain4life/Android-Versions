@@ -80,7 +80,7 @@
             android:paddingBottom="@dimen/icon_margin"
             android:paddingStart="@dimen/card_margin"
             android:paddingEnd="@dimen/card_margin"
-            android:contentDescription="@string/app_name"
+            android:contentDescription="@string/menu_favourites"
             android:src="@{entity.isFavourite ? @drawable/ic_favourite_white : @drawable/ic_no_favourite_white, default = @drawable/ic_no_favourite_white}"
             android:onClick="@{() -> viewHolder.onFavourite()}"/>
 
