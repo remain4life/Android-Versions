@@ -1,6 +1,7 @@
 package org.remain4life.androidversions.base;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.databinding.Bindable;
 import android.databinding.DataBindingUtil;
 import android.databinding.Observable;
@@ -70,6 +71,17 @@ public abstract class BaseActivity<B extends ViewDataBinding> extends AppCompatA
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, null)
+                .show());
+    }
+
+    public void showDialog(String title, String message,
+                           DialogInterface.OnClickListener okListener,
+                           DialogInterface.OnClickListener cancelListener) {
+        setDialog(new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, okListener)
+                .setNegativeButton(android.R.string.cancel, cancelListener)
                 .show());
     }
 

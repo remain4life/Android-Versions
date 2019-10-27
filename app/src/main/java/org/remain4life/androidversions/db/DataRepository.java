@@ -228,4 +228,26 @@ public class DataRepository {
                         throwable -> Log.e(Helper.ERROR_TAG, throwable.toString())
                 );
     }
+
+    /**
+     * Deletes needed entity from DB
+     *
+     * @param entity PlatformVersionEntity we want to delete
+     */
+    @SuppressLint("CheckResult")
+    public void deleteEntity(PlatformVersionEntity entity) {
+        Observable.just(db)
+                .subscribeOn(Schedulers.io())
+                .map(db -> db.entitiesDao()
+                        .deleteVersion(entity.version))
+                .observeOn(RxAndroidPlugins.onMainThreadScheduler())
+                .subscribe(result -> {
+                            if (BuildConfig.DEBUG) {
+                                Log.d(DB_TAG, "-> Deleted " + result + ", "
+                                        + entity.name);
+                            }
+                        },
+                        throwable -> Log.e(Helper.ERROR_TAG, throwable.toString())
+                );
+    }
 }

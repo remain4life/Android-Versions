@@ -1,24 +1,19 @@
 package org.remain4life.androidversions.adapters;
 
-import android.content.Intent;
 import android.databinding.Bindable;
 import android.databinding.Observable;
 import android.databinding.ObservableList;
 import android.databinding.PropertyChangeRegistry;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.remain4life.androidversions.BR;
 import org.remain4life.androidversions.BuildConfig;
 import org.remain4life.androidversions.ItemDetailActivity;
-import org.remain4life.androidversions.ItemDetailFragment;
 import org.remain4life.androidversions.ItemListActivity;
-import org.remain4life.androidversions.R;
 import org.remain4life.androidversions.base.IListAdapter;
 import org.remain4life.androidversions.databinding.VersionItemBinding;
 import org.remain4life.androidversions.db.DataRepository;
@@ -67,7 +62,7 @@ public class PlatformVersionsAdapter
         private PlatformVersionEntity entity;
         private final PropertyChangeRegistry mCallbacks = new PropertyChangeRegistry();
 
-        public VersionViewHolder(VersionItemBinding binding) {
+        VersionViewHolder(VersionItemBinding binding) {
             super(binding.getRoot());
             versionItemBinding = binding;
             versionItemBinding.setActivity(activity);
@@ -79,30 +74,49 @@ public class PlatformVersionsAdapter
          */
         public void onVersion() {
             if (BuildConfig.DEBUG) {
-                Log.d(APP_TAG, "-> Clicked on " + entity.name);
+                Log.d(APP_TAG, "-> Clicked on " + entity.version + ", " + entity.name);
             }
 
             if (twoPane) {
-                Bundle arguments = new Bundle();
-                arguments.putParcelable(ItemDetailFragment.ARG_ENTITY, entity);
-                ItemDetailFragment fragment = new ItemDetailFragment();
-                fragment.setArguments(arguments);
-                activity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.item_detail_container, fragment)
-                        .commit();
+                activity.addEntityFragment(entity);
             } else {
-                Intent intent = new Intent(activity, ItemDetailActivity.class);
-                intent.putExtra(ItemDetailFragment.ARG_ENTITY, entity);
-                activity.startActivity(intent);
+                activity.startActivity(
+                        ItemDetailActivity.createIntent(activity.getApplicationContext(),
+                                entity)
+                );
             }
         }
 
+        /**
+         * Changes favourite flag, caches it to DB
+         */
         public void onFavourite(){
-            Toast.makeText(activity, "onFavourite clicked", Toast.LENGTH_LONG).show();
+            //Toast.makeText(activity, "onFavourite clicked", Toast.LENGTH_LONG).show();
             entity.isFavourite = !entity.isFavourite;
             setEntity(entity);
             DataRepository.getInstance()
                     .updateFavourite(entity);
+        }
+
+        /**
+         * Calls dialog to delete item from list
+         */
+        public boolean onLongClick(){
+            //Toast.makeText(activity, "onLongClick called", Toast.LENGTH_LONG).show();
+            activity.showDeleteDialog((dialog, which) -> {
+                // remove position from DB
+                DataRepository.getInstance()
+                        .deleteEntity(entity);
+
+                // remove position from the items list
+                int position = getAdapterPosition();
+                data.remove(position);
+                notifyItemRemoved(position);
+
+                // remove fragment with this entity
+                activity.removeEntityFragment(entity);
+            }, entity);
+            return true;
         }
 
         @Bindable

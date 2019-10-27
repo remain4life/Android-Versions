@@ -1,8 +1,9 @@
 package org.remain4life.androidversions;
 
+import android.content.DialogInterface;
 import android.databinding.Bindable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 
 import org.remain4life.androidversions.adapters.PlatformVersionsAdapter;
@@ -80,5 +81,50 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
         this.versionItems = versionItems;
         notifyPropertyChanged(BR.activity);
         adapter.setData(versionItems);
+    }
+
+    /**
+     * Shows delete item dialog
+     *
+     * @param deleteListener listener for yes action
+     * @param entity PlatformVersionEntity to display info about
+     */
+    public void showDeleteDialog(DialogInterface.OnClickListener deleteListener, PlatformVersionEntity entity) {
+        showDialog(
+                String.format(getString(R.string.dialog_delete_title), entity.version, entity.name),
+                getString(R.string.dialog_delete_message),
+                deleteListener,
+                null);
+    }
+
+    /**
+     * Creates and adds fragment with detail entity info
+     *
+     * @param entity PlatformVersionEntity to display details
+     */
+    public void addEntityFragment(PlatformVersionEntity entity) {
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(ItemDetailFragment.ARG_ENTITY, entity);
+        ItemDetailFragment fragment = new ItemDetailFragment();
+        fragment.setArguments(arguments);
+        // tag is unique field of entity
+        String fragmentTag = entity.version;
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.item_detail_container, fragment, fragmentTag)
+                .commit();
+    }
+
+    /**
+     * Removes details fragment of deleted entity
+     *
+     * @param entity deleted PlatformVersionEntity
+     */
+    public void removeEntityFragment(PlatformVersionEntity entity) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(entity.version);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .remove(fragment)
+                    .commit();
+        }
     }
 }

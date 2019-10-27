@@ -2,6 +2,7 @@ package org.remain4life.androidversions.db;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +11,7 @@ import org.remain4life.androidversions.helpers.Helper;
 
 import java.util.Date;
 
-@Entity(tableName = "platform_versions")
+@Entity(tableName = "platform_versions", indices = {@Index(value = "version", unique = true)})
 public class PlatformVersionEntity implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     public int id;

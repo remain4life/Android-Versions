@@ -127,5 +127,7 @@ As of May 2019, statistics issued by Google indicate that 0.3% of all Android de
     <string name="detail_released">Released: %1$s</string>
     <string name="detail_api">API: %1$s</string>
     <string name="detail_distribution">Distribution: %1$s%%</string>
+    <string name="dialog_delete_title">Delete %1$s, %2$s item</string>
+    <string name="dialog_delete_message">Are you sure?</string>
 
 </resources>

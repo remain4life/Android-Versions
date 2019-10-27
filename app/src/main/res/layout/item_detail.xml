@@ -1,73 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_detail"
     tools:context=".ItemDetailFragment">
     <data>
         <variable
             name="fragment"
             type="org.remain4life.androidversions.ItemDetailFragment" />
+        <import
+            type="android.text.method.ScrollingMovementMethod"/>
     </data>
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/text_margin">
+        android:layout_height="match_parent"
+        android:padding="@dimen/card_margin"
+        android:background="@color/colorLightPrimary">
 
-        <TextView
-            android:id="@+id/version"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/text_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:text="@{@string/detail_version(fragment.entity.version)}"
-            />
+            android:layout_margin="@dimen/card_half_margin"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardElevation="4dp"
+            card_view:cardPreventCornerOverlap="true">
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/text_margin"
-            android:textColor="@color/colorPrimaryText"
-            android:text="@{@string/detail_name(fragment.entity.name)}"
-            />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/text_margin">
 
-        <TextView
-            android:id="@+id/released"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryText"
-            android:paddingBottom="@dimen/text_margin"
-            android:text="@{@string/detail_released(fragment.entity.releasedString)}"
-            />
+                <TextView
+                    android:id="@+id/version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/text_margin"
+                    android:textColor="@color/colorPrimaryText"
+                    android:text="@{@string/detail_version(fragment.entity.version)}"
+                    />
 
-        <TextView
-            android:id="@+id/api"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryText"
-            android:paddingBottom="@dimen/text_margin"
-            android:text="@{@string/detail_api(String.valueOf(fragment.entity.api))}"
-            />
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/text_margin"
+                    android:textColor="@color/colorPrimaryText"
+                    android:text="@{@string/detail_name(fragment.entity.name)}"
+                    />
 
-        <TextView
-            android:id="@+id/distribution"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryText"
-            android:paddingBottom="@dimen/text_margin"
-            android:text="@{@string/detail_distribution(String.valueOf(fragment.entity.distribution))}"
-            />
+                <TextView
+                    android:id="@+id/released"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:paddingBottom="@dimen/text_margin"
+                    android:text="@{@string/detail_released(fragment.entity.releasedString)}"
+                    />
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryText"
-            android:paddingBottom="@dimen/text_margin"
-            android:text="@{fragment.entity.description}"
-            />
+                <TextView
+                    android:id="@+id/api"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:paddingBottom="@dimen/text_margin"
+                    android:text="@{@string/detail_api(String.valueOf(fragment.entity.api))}"
+                    />
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/distribution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:paddingBottom="@dimen/text_margin"
+                    android:text="@{@string/detail_distribution(String.valueOf(fragment.entity.distribution))}"
+                    />
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:paddingBottom="@dimen/text_margin"
+                    android:text="@{fragment.entity.description}"
+                    card_view:movementMethod="@{ScrollingMovementMethod.instance}"
+                    />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </FrameLayout>
+
 </layout>

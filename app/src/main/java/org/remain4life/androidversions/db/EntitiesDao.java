@@ -38,4 +38,8 @@ public interface EntitiesDao {
     // to know is DB empty
     @Query("SELECT COUNT (*) FROM platform_versions")
     int rowsCount();
+
+    // delete row from DB by version
+    @Query("DELETE FROM platform_versions WHERE version = :version")
+    int deleteVersion(String version);
 }

@@ -1,5 +1,6 @@
 package org.remain4life.androidversions;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.Bindable;
 import android.os.Bundle;
@@ -23,6 +24,12 @@ import static org.remain4life.androidversions.ItemDetailFragment.ARG_ENTITY;
 public class ItemDetailActivity extends BaseActivity<ActivityItemDetailBinding> {
 
     private PlatformVersionEntity entity;
+
+    public static Intent createIntent(Context context, PlatformVersionEntity entity) {
+        Intent intent = new Intent(context, ItemDetailActivity.class);
+        intent.putExtra(ItemDetailFragment.ARG_ENTITY, entity);
+        return intent;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
