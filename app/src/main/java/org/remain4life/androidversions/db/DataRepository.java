@@ -5,6 +5,8 @@ import android.util.Log;
 
 import org.remain4life.androidversions.BuildConfig;
 import org.remain4life.androidversions.R;
+import org.remain4life.androidversions.base.IFavouritesObserver;
+import org.remain4life.androidversions.base.IEntitySubject;
 import org.remain4life.androidversions.base.IVersionItemsContainer;
 import org.remain4life.androidversions.helpers.Application;
 import org.remain4life.androidversions.helpers.Helper;
@@ -19,13 +21,17 @@ import io.reactivex.schedulers.Schedulers;
 
 import static org.remain4life.androidversions.helpers.Helper.DB_TAG;
 
-public class DataRepository {
+public class DataRepository implements IEntitySubject {
     private static DataRepository instance;
 
     private AppDatabase db;
 
+    // observers to get favourite updates
+    private List<IFavouritesObserver> favouritesObservers;
+
     private DataRepository(AppDatabase db) {
         this.db = db;
+        favouritesObservers = new ArrayList<>();
     }
 
     public static DataRepository getInstance() {
@@ -224,6 +230,7 @@ public class DataRepository {
                                 Log.d(DB_TAG, "-> Entity " + entity.version + ", "
                                         + entity.name + " favourite cached: " + entity.isFavourite);
                             }
+                            notifyObservers(entity);
                         },
                         throwable -> Log.e(Helper.ERROR_TAG, throwable.toString())
                 );
@@ -249,5 +256,25 @@ public class DataRepository {
                         },
                         throwable -> Log.e(Helper.ERROR_TAG, throwable.toString())
                 );
+    }
+
+
+    @Override
+    public void registerObserver(IFavouritesObserver favouritesObserver) {
+        if(!favouritesObservers.contains(favouritesObserver)) {
+            favouritesObservers.add(favouritesObserver);
+        }
+    }
+
+    @Override
+    public void removeObserver(IFavouritesObserver repositoryObserver) {
+        favouritesObservers.remove(repositoryObserver);
+    }
+
+    @Override
+    public void notifyObservers(PlatformVersionEntity entity) {
+        for (IFavouritesObserver observer: favouritesObservers) {
+            observer.onUserDataChanged(entity);
+        }
     }
 }

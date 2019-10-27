@@ -6,6 +6,7 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import org.remain4life.androidversions.helpers.Helper;
 
@@ -105,5 +106,15 @@ public class PlatformVersionEntity implements Parcelable {
 
     public String getReleasedString(){
         return Helper.getFormattedDate(released);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "PlatformVersionEntity{" +
+                "version='" + version + '\'' +
+                ", name='" + name + '\'' +
+                ", favourite=" + isFavourite +
+                '}';
     }
 }

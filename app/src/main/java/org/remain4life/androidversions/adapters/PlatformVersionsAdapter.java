@@ -168,7 +168,6 @@ public class PlatformVersionsAdapter
         if (this.data instanceof ObservableList) {
             ((ObservableList<PlatformVersionEntity>) this.data).addOnListChangedCallback(onListChangedCallback);
         }
-        notifyDataSetChanged();
     }
 }
 

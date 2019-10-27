@@ -5,15 +5,20 @@ import android.databinding.Bindable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import org.remain4life.androidversions.adapters.PlatformVersionsAdapter;
 import org.remain4life.androidversions.base.BaseActivity;
+import org.remain4life.androidversions.base.IFavouritesObserver;
 import org.remain4life.androidversions.base.IVersionItemsContainer;
 import org.remain4life.androidversions.databinding.ActivityItemListBinding;
 import org.remain4life.androidversions.db.DataRepository;
 import org.remain4life.androidversions.db.PlatformVersionEntity;
 
 import java.util.List;
+
+import static org.remain4life.androidversions.helpers.Helper.APP_TAG;
+import static org.remain4life.androidversions.helpers.Helper.DB_TAG;
 
 /**
  * An activity representing a list of Items. This activity
@@ -23,7 +28,7 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  implements IVersionItemsContainer {
+public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  implements IVersionItemsContainer, IFavouritesObserver {
 
     // activity two-pane mode flag, i.e. running on a tablet device or not
     private boolean twoPane;
@@ -32,6 +37,9 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
     private List<PlatformVersionEntity> versionItems;
 
     PlatformVersionsAdapter adapter;
+
+    // repository subject to observe
+    DataRepository repo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,10 +55,12 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
         }
 
         setupRecyclerView();
+        repo = DataRepository.getInstance();
+        // observe favourite changes
+        repo.registerObserver(this);
 
         // load
-        DataRepository.getInstance()
-                .loadVersionsFromDB(DataRepository.Filter.ALL, this);
+        repo.loadVersionsFromDB(DataRepository.Filter.ALL, this);
     }
 
     private void setupRecyclerView() {
@@ -80,7 +90,10 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
     public void setVersionItems(List<PlatformVersionEntity> versionItems) {
         this.versionItems = versionItems;
         notifyPropertyChanged(BR.activity);
+        notifyPropertyChanged(BR.items);
         adapter.setData(versionItems);
+        adapter.notifyDataSetChanged();
+        binding.executePendingBindings();
     }
 
     /**
@@ -126,5 +139,25 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
                     .remove(fragment)
                     .commit();
         }
+    }
+
+    @Override
+    public void onUserDataChanged(PlatformVersionEntity entity) {
+        if (BuildConfig.DEBUG) {
+            Log.d(DB_TAG, "ItemListActivity -> onUserDataChanged called: " + entity.version + ", "
+                    + entity.name + ", favourite - " + entity.isFavourite);
+        }
+        for (PlatformVersionEntity item : versionItems) {
+            if (item.version.equals(entity.version)) {
+                item.isFavourite = entity.isFavourite;
+            }
+        }
+        setVersionItems(versionItems);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        repo.removeObserver(this);
     }
 }
