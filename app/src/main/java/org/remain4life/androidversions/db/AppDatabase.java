@@ -37,13 +37,6 @@ public abstract class AppDatabase extends RoomDatabase {
                         .fallbackToDestructiveMigration()
                         //only for TEST
                         //.allowMainThreadQueries()
-                        .addCallback(new Callback() {
-                            @Override
-                            public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                                super.onCreate(db);
-                                DataRepository.getInstance().populateDb();
-                            }
-                        })
                         .build();
             }
         }

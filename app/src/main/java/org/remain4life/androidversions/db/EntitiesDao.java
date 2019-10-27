@@ -34,4 +34,8 @@ public interface EntitiesDao {
     // insert new PlatformVersionEntities with replace strategy
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Long[] insert(List<PlatformVersionEntity> entities);
+
+    // to know is DB empty
+    @Query("SELECT COUNT (*) FROM platform_versions")
+    int rowsCount();
 }

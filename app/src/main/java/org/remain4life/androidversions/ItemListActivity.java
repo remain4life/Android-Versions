@@ -45,14 +45,16 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
             twoPane = true;
         }
 
-        setupRecyclerView(binding.recyclerContainer.itemList);
+        setupRecyclerView();
 
         // load
         DataRepository.getInstance()
                 .loadVersionsFromDB(DataRepository.Filter.ALL, this);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+    private void setupRecyclerView() {
+        RecyclerView recyclerView = twoPane ?
+                binding.containerTablet.itemListTablet : binding.container.itemList;
         adapter = new PlatformVersionsAdapter(this, twoPane);
         recyclerView.setAdapter(adapter);
         notifyPropertyChanged(BR.items);

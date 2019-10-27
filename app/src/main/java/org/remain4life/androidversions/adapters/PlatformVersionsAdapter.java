@@ -21,6 +21,7 @@ import org.remain4life.androidversions.ItemListActivity;
 import org.remain4life.androidversions.R;
 import org.remain4life.androidversions.base.IListAdapter;
 import org.remain4life.androidversions.databinding.VersionItemBinding;
+import org.remain4life.androidversions.db.DataRepository;
 import org.remain4life.androidversions.db.PlatformVersionEntity;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class PlatformVersionsAdapter
 
     @Override
     public void onBindViewHolder(@NonNull VersionViewHolder versionViewHolder, int i) {
-        versionViewHolder.setItem(data.get(i));
+        versionViewHolder.setEntity(data.get(i));
     }
 
     @Override
@@ -63,7 +64,7 @@ public class PlatformVersionsAdapter
 
     public class VersionViewHolder extends RecyclerView.ViewHolder implements Observable {
         private final VersionItemBinding versionItemBinding;
-        private PlatformVersionEntity item;
+        private PlatformVersionEntity entity;
         private final PropertyChangeRegistry mCallbacks = new PropertyChangeRegistry();
 
         public VersionViewHolder(VersionItemBinding binding) {
@@ -78,12 +79,12 @@ public class PlatformVersionsAdapter
          */
         public void onVersion() {
             if (BuildConfig.DEBUG) {
-                Log.d(APP_TAG, "-> Clicked on " + item.name);
+                Log.d(APP_TAG, "-> Clicked on " + entity.name);
             }
 
             if (twoPane) {
                 Bundle arguments = new Bundle();
-                arguments.putParcelable(ItemDetailFragment.ARG_ENTITY, item);
+                arguments.putParcelable(ItemDetailFragment.ARG_ENTITY, entity);
                 ItemDetailFragment fragment = new ItemDetailFragment();
                 fragment.setArguments(arguments);
                 activity.getSupportFragmentManager().beginTransaction()
@@ -91,25 +92,27 @@ public class PlatformVersionsAdapter
                         .commit();
             } else {
                 Intent intent = new Intent(activity, ItemDetailActivity.class);
-                intent.putExtra(ItemDetailFragment.ARG_ENTITY, item);
+                intent.putExtra(ItemDetailFragment.ARG_ENTITY, entity);
                 activity.startActivity(intent);
             }
         }
 
         public void onFavourite(){
             Toast.makeText(activity, "onFavourite clicked", Toast.LENGTH_LONG).show();
-            item.isFavourite = true;
-            notifyPropertyChanged(BR.entity);
+            entity.isFavourite = !entity.isFavourite;
+            setEntity(entity);
+            DataRepository.getInstance()
+                    .updateFavourite(entity);
         }
 
         @Bindable
-        public PlatformVersionEntity getItem() {
-            return item;
+        public PlatformVersionEntity getEntity() {
+            return entity;
         }
 
-        public void setItem(PlatformVersionEntity item) {
-            this.item = item;
-            versionItemBinding.setEntity(item);
+        public void setEntity(PlatformVersionEntity entity) {
+            this.entity = entity;
+            versionItemBinding.setEntity(entity);
             notifyPropertyChanged(BR.entity);
             versionItemBinding.executePendingBindings();
         }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import org.remain4life.androidversions.BuildConfig;
-import org.remain4life.androidversions.ItemListActivity;
 import org.remain4life.androidversions.R;
 import org.remain4life.androidversions.base.IVersionItemsContainer;
 import org.remain4life.androidversions.helpers.Application;
@@ -44,20 +43,13 @@ public class DataRepository {
 
 
     @SuppressLint("CheckResult")
-    void populateDb() {
+    private Observable<Long[]> populateDb() {
         // create list with records for DB
         List<PlatformVersionEntity> entityList = createPlatformVersionsList();
 
-        Observable.fromCallable(() ->
+        return Observable.fromCallable(() ->
                 db.entitiesDao().insert(entityList)
-        ).subscribeOn(Schedulers.io())
-                .observeOn(RxAndroidPlugins.onMainThreadScheduler())
-                .subscribe(insertedNumber -> {
-                            if (BuildConfig.DEBUG) {
-                                Log.d(DB_TAG, "Records inserted: " + insertedNumber.length);
-                            }
-                        }
-                );
+        );
     }
 
     /**
@@ -160,12 +152,11 @@ public class DataRepository {
     /**
      * Loads Android platform version list
      *
-     * @param filter enum value to choose what to load
+     * @param filter    enum value to choose what to load
      * @param container IVersionItemsContainer implementation to load items
      */
     @SuppressLint("CheckResult")
     public void loadVersionsFromDB(Filter filter, IVersionItemsContainer container) {
-
         Single<List<PlatformVersionEntity>> load;
         switch (filter) {
             case ALL:
@@ -181,18 +172,60 @@ public class DataRepository {
 
         }
 
-        load
+        // check is DB empty
+        Observable.fromCallable(() ->
+                db.entitiesDao().rowsCount()
+        ).subscribeOn(Schedulers.io())
+                .map(count -> {
+                    if (BuildConfig.DEBUG) {
+                        Log.d(DB_TAG, "-> DB rows count: " +  count);
+                    }
+                    if (count == 0) {
+                        // fill DB
+                        if (BuildConfig.DEBUG) {
+                            Log.d(DB_TAG, "-> DB is empty, populating... ");
+                        }
+                        return populateDb()
+                                .ignoreElements()
+                                .andThen(load);
+                    }
+                    return load;
+                })
+                .subscribe(listSingle -> listSingle
+                                .observeOn(RxAndroidPlugins.onMainThreadScheduler())
+                                .subscribe(entities -> {
+                                            container.setVersionItems(entities);
+
+                                            if (BuildConfig.DEBUG) {
+                                                Log.d(DB_TAG, "-> " +  entities.size() + " entities successfully loaded from DB");
+                                            }
+                                        },
+                                        throwable -> container.onError(throwable.toString())
+                                ),
+
+                        throwable -> container.onError(throwable.toString())
+                );
+    }
+
+    /**
+     * Updates favourites flag in DB
+     *
+     * @param entity PlatformVersionEntity with changed favourites flag
+     */
+    @SuppressLint("CheckResult")
+    public void updateFavourite(PlatformVersionEntity entity) {
+        Observable.just(db)
                 .subscribeOn(Schedulers.io())
+                .map(db -> db.entitiesDao()
+                        .setVersionFavourite(entity.version, entity.isFavourite))
                 .observeOn(RxAndroidPlugins.onMainThreadScheduler())
-                .subscribe(entities ->  {
-
-                            container.setVersionItems(entities);
-
+                .subscribe(result -> {
                             if (BuildConfig.DEBUG) {
-                                Log.d(DB_TAG, "-> " + entities.size() + " entities successfully loaded from DB");
+                                Log.d(DB_TAG, "-> Entity " + entity.version + ", "
+                                        + entity.name + " favourite cached: " + entity.isFavourite);
                             }
                         },
-                        throwable -> container.onError(throwable.toString())
+                        throwable -> Log.e(Helper.ERROR_TAG, throwable.toString())
                 );
     }
 }

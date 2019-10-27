@@ -9,7 +9,6 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import org.remain4life.androidversions.base.BaseActivity;
-import org.remain4life.androidversions.base.IVersionItemsContainer;
 import org.remain4life.androidversions.databinding.ActivityItemDetailBinding;
 import org.remain4life.androidversions.db.PlatformVersionEntity;
 

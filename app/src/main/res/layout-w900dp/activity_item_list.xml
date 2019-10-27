@@ -37,7 +37,7 @@
 
             <include
                 layout="@layout/item_list"
-                android:id="@+id/container"
+                android:id="@+id/container_tablet"
                 app:items="@{activity.versionItems}"/>
         </FrameLayout>
 

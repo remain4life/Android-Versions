@@ -23,14 +23,10 @@
         android:showDividers="middle"
         tools:context=".ItemListActivity">
 
-        <!--
-        This layout is a two-pane layout for the Items
-        master/detail flow.
-
-        -->
+        <!-- two-pane layout for the items master/detail flow. -->
 
         <org.remain4life.androidversions.LinearRecyclerView
-            android:id="@+id/item_list"
+            android:id="@+id/item_list_tablet"
             android:name="org.remain4life.androidversions.ItemListFragment"
             android:layout_width="@dimen/item_width"
             android:layout_height="match_parent"
