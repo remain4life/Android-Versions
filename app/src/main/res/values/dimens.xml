@@ -8,6 +8,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">8dp</dimen>
     <dimen name="activity_half_vertical_margin">4dp</dimen>
+    <dimen name="recycler_vertical_padding">16dp</dimen>
     <dimen name="card_margin">8dp</dimen>
     <dimen name="card_half_margin">4dp</dimen>
     <dimen name="primary_text_size">14sp</dimen>

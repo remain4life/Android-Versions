@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-
     <data>
-
-        <import type="org.remain4life.androidversions.db.PlatformVersionEntity" />
-
+        <import
+            type="org.remain4life.androidversions.db.PlatformVersionEntity" />
         <variable
             name="items"
             type="java.util.List&lt;PlatformVersionEntity>" />
@@ -32,10 +30,10 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/recycler_vertical_padding"
+            android:paddingTop="@dimen/recycler_vertical_padding"
             app:data="@{items}" />
 
         <FrameLayout

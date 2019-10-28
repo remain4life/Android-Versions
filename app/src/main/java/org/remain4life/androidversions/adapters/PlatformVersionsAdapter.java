@@ -32,6 +32,8 @@ public class PlatformVersionsAdapter
     private List<PlatformVersionEntity> data;
     private final ObservableList.OnListChangedCallback<ObservableList<PlatformVersionEntity>> onListChangedCallback = new AdapterOnListChangedCallback<>(this);
 
+    private int selectedPos = RecyclerView.NO_POSITION;
+
     public PlatformVersionsAdapter(ItemListActivity activity, boolean twoPane) {
         this.activity = activity;
         this.twoPane = twoPane;
@@ -50,6 +52,7 @@ public class PlatformVersionsAdapter
     @Override
     public void onBindViewHolder(@NonNull VersionViewHolder versionViewHolder, int i) {
         versionViewHolder.setEntity(data.get(i));
+        versionViewHolder.itemView.setSelected(selectedPos == i);
     }
 
     @Override
@@ -85,6 +88,10 @@ public class PlatformVersionsAdapter
                                 entity)
                 );
             }
+
+            notifyItemChanged(selectedPos);
+            selectedPos = getLayoutPosition();
+            notifyItemChanged(selectedPos);
         }
 
         /**
