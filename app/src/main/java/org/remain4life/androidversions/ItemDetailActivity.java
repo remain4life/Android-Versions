@@ -36,7 +36,7 @@ public class ItemDetailActivity extends BaseActivity<ActivityItemDetailBinding> 
         super.onCreate(savedInstanceState);
 
         setSupportActionBar(binding.detailToolbar);
-        binding.detailToolbar.setTitle(getTitle());
+        setTitle(getTitle());
 
         // show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();

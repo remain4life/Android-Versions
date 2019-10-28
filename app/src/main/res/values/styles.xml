@@ -34,4 +34,9 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
+    <style name="StartTextTheme" parent="PrimaryTextTheme">
+        <item name="android:layout_gravity">start</item>
+        <item name="android:paddingBottom">@dimen/text_margin</item>
+    </style>
+
 </resources>

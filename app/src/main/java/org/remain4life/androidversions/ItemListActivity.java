@@ -33,7 +33,6 @@ import static org.remain4life.androidversions.helpers.Helper.DB_TAG;
  */
 public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  implements IVersionItemsContainer, IFavouritesObserver {
 
-    private static final String EXTRA_FILTER = "filter";
     // activity two-pane mode flag, i.e. running on a tablet device or not
     private boolean twoPane;
 
@@ -228,14 +227,12 @@ public class ItemListActivity extends BaseActivity<ActivityItemListBinding>  imp
         }
     }
 
+    /**
+     * Creates app title with applied filter name
+     *
+     * @return String title
+     */
     private String getAppTitle() {
         return String.format(getString(R.string.app_name_filter), getString(filter.source));
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // cache filter
-        outState.putInt(EXTRA_FILTER, filter.ordinal());
     }
 }

@@ -89,6 +89,7 @@ public class PlatformVersionsAdapter
                 );
             }
 
+            // update position for selector
             notifyItemChanged(selectedPos);
             selectedPos = getLayoutPosition();
             notifyItemChanged(selectedPos);
@@ -149,10 +150,6 @@ public class PlatformVersionsAdapter
             mCallbacks.remove(callback);
         }
 
-        public void notifyChange() {
-            mCallbacks.notifyCallbacks(this, 0, null);
-        }
-
         public void notifyPropertyChanged(int fieldId) {
             mCallbacks.notifyCallbacks(this, fieldId, null);
         }
@@ -175,6 +172,10 @@ public class PlatformVersionsAdapter
         if (this.data instanceof ObservableList) {
             ((ObservableList<PlatformVersionEntity>) this.data).addOnListChangedCallback(onListChangedCallback);
         }
+
+        // remove selection on global update
+        selectedPos = RecyclerView.NO_POSITION;
+        notifyItemChanged(selectedPos);
     }
 }
 
