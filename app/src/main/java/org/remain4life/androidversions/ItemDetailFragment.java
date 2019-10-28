@@ -104,7 +104,10 @@ public class ItemDetailFragment extends BaseFragment<ItemDetailBinding> implemen
             Log.d(DB_TAG, "ItemDetailFragment -> onUserDataChanged called: " + entity.version + ", "
                     + entity.name + ", favourite - " + entity.isFavourite);
         }
-        setEntity(entity);
+        // update entity only if it's the same version
+        if (entity.version.equals(this.entity.version)) {
+            setEntity(entity);
+        }
     }
 
     @Override
